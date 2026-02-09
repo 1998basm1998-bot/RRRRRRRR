@@ -6,6 +6,7 @@
     --text-color: #333;
     --danger: #e74c3c;
     --success: #27ae60;
+    --info: #3498db;
     --shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
@@ -16,7 +17,7 @@ body {
     background-color: var(--bg-color);
     margin: 0;
     padding: 0;
-    padding-bottom: 80px;
+    padding-bottom: 90px; /* زيادة المسافة للتبويبات */
     color: var(--text-color);
     overflow-x: hidden;
 }
@@ -50,7 +51,7 @@ section.active { display: block; }
 .form-group { margin-bottom: 15px; }
 label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 0.9rem; }
 
-input {
+input, select {
     width: 100%;
     padding: 12px;
     border: 2px solid #ddd;
@@ -59,9 +60,8 @@ input {
     font-size: 1rem;
     transition: 0.3s;
 }
-input:focus { border-color: var(--accent-color); outline: none; }
+input:focus, select:focus { border-color: var(--accent-color); outline: none; }
 
-/* ستايل جديد للحقل مع زر */
 .input-with-btn {
     display: flex;
     gap: 10px;
@@ -118,6 +118,7 @@ input:focus { border-color: var(--accent-color); outline: none; }
     box-shadow: 0 0 10px red; z-index: 2;
 }
 
+/* ستايل المنتجات والقوائم */
 .cart-item {
     display: flex;
     justify-content: space-between;
@@ -143,6 +144,59 @@ input:focus { border-color: var(--accent-color); outline: none; }
     display: flex; align-items: center; justify-content: center;
 }
 
+/* أزرار الحذف والتعديل */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+.mini-btn {
+    width: 35px;
+    height: 35px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-edit { background: var(--info); }
+.btn-delete { background: var(--danger); }
+
+/* ستايل قائمة الزبائن */
+.customer-card-item {
+    background: #fafafa;
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.customer-card-item:hover { background: #f0f0f0; border-color: var(--accent-color); }
+
+/* النافذة المنبثقة */
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.modal-content {
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+.close-modal {
+    position: absolute; left: 15px; top: 15px; font-size: 1.5rem; cursor: pointer;
+}
+
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -160,11 +214,12 @@ input:focus { border-color: var(--accent-color); outline: none; }
 .nav-item {
     text-align: center;
     color: #999;
-    font-size: 0.8rem;
+    font-size: 0.7rem; /* تصغير الخط قليلا لاستيعاب 4 أيقونات */
     background: none;
     border: none;
+    flex: 1;
 }
-.nav-item i { display: block; font-size: 1.4rem; margin-bottom: 5px; }
+.nav-item i { display: block; font-size: 1.3rem; margin-bottom: 5px; }
 .nav-item.active { color: var(--accent-color); }
 
 #toast {
