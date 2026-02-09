@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>كاشير – مسح باركود حقيقي</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://unpkg.com/@ericblade/quagga2/dist/quagga.js"></script>
+
+<style>
+body {
+  font-family: Arial;
+  direction: rtl;
+  background: #f4f4f4;
+  padding: 10px;
+}
+#scanner {
+  width: 100%;
+  height: 300px;
+  background: black;
+}
+button {
+  padding: 10px;
+  margin: 5px 0;
+  width: 100%;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background: white;
+}
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+th {
+  background: #eee;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🧾 كاشير – مسح باركود</h2>
+
+<button onclick="startScanner()">📷 بدء المسح</button>
+<button onclick="stopScanner()">⛔ إيقاف المسح</button>
+
+<div id="scanner"></div>
+
+<table>
+<thead>
+<tr>
+  <th>المنتج</th>
+  <th>السعر</th>
+  <th>الكمية</th>
+  <th>الإجمالي</th>
+</tr>
+</thead>
+<tbody id="saleList"></tbody>
+</table>
+
+<script>
+let productsDB = {
+  "6294001234567": { name: "حليب", price: 1500 },
+  "5449000000996": { name: "كوكاكولا", price: 1000 },
+  "8901030896240": { name: "بسكويت", price: 750 }
+};
+
+let cart = {};
+
+function startScanner() {
+  Quagga.init({
+    inputStream: {
+      name: "Live",
+      type: "LiveStream",
+      target: document.querySelector('#scanner'),
+      constraints: {
+        facingMode: "environment"
+      }
+    },
+    decoder: {
+      readers: ["ean_reader", "upc_reader", "code_128_reader"]
+    }
+  }, function(err) {
+    if (err) {
+      alert("خطأ بالكاميرا");
+      return;
+    }
+    Quagga.start();
+  });
+
+  Quagga.onDetected(onBarcodeDetected);
+}
+
+function stopScanner() {
+  Quagga.stop();
+}
+
+function onBarcodeDetected(data) {
+  let code = data.codeResult.code;
+
+  if (!productsDB[code]) {
+    alert("منتج غير مسجل: " + code);
+    return;
+  }
+
+  if (cart[code]) {
+    cart[code].qty += 1;
+  } else {
+    cart[code] = {
+      name: productsDB[code].name,
+      price: productsDB[code].price,
+      qty: 1
+    };
+  }
+
+  renderCart();
+}
+
+function renderCart() {
+  let tbody = document.getElementById("saleList");
+  tbody.innerHTML = "";
+
+  Object.values(cart).forEach(p => {
+    let tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${p.name}</td>
+      <td>${p.price}</td>
+      <td>${p.qty}</td>
+      <td>${p.price * p.qty}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+</script>
+
+</body>
+</html>
