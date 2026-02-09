@@ -6,169 +6,7 @@
     <title>تطبيق كاشير برو</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <style>
-        :root {
-            --primary-color: #2c3e50; /* لون داكن فخم */
-            --accent-color: #d4a373; /* لون تراثي (ذهبي/ترابي) */
-            --bg-color: #f4f6f7;
-            --white: #ffffff;
-            --text-color: #333;
-            --danger: #e74c3c;
-            --success: #27ae60;
-            --shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: var(--bg-color);
-            margin: 0;
-            padding: 0;
-            padding-bottom: 80px; /* مسافة للتبويبات السفلية */
-            color: var(--text-color);
-            overflow-x: hidden;
-        }
-
-        /* الهيدر */
-        header {
-            background: var(--white);
-            padding: 15px;
-            text-align: center;
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 3px solid var(--accent-color);
-        }
-        header h1 { margin: 0; font-size: 1.2rem; color: var(--primary-color); }
-
-        /* الأقسام (الصفحات) */
-        section { display: none; padding: 15px; animation: fadeIn 0.3s ease; }
-        section.active { display: block; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* البطاقات والحقول */
-        .card {
-            background: var(--white);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: var(--shadow);
-            border: 1px solid #eee;
-        }
-
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 0.9rem; }
-        
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-family: 'Cairo';
-            font-size: 1rem;
-            transition: 0.3s;
-        }
-        input:focus { border-color: var(--accent-color); outline: none; }
-
-        /* الأزرار */
-        .btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: 0.2s;
-        }
-        .btn-primary { background: var(--primary-color); color: white; }
-        .btn-accent { background: var(--accent-color); color: white; }
-        .btn-success { background: var(--success); color: white; }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn:active { transform: scale(0.98); }
-
-        /* الكاميرا */
-        #interactive {
-            width: 100%;
-            height: 250px;
-            background: #000;
-            border-radius: 15px;
-            overflow: hidden;
-            position: relative;
-            margin-bottom: 15px;
-        }
-        #interactive video { width: 100%; height: 100%; object-fit: cover; }
-        .scan-line {
-            position: absolute; width: 100%; height: 2px; background: red; top: 50%;
-            box-shadow: 0 0 10px red; z-index: 2;
-        }
-
-        /* قائمة المنتجات في السلة */
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .cart-item:last-child { border-bottom: none; }
-        .item-info h4 { margin: 0; font-size: 1rem; }
-        .item-info p { margin: 5px 0 0; color: #777; font-size: 0.85rem; }
-        
-        .qty-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #f0f0f0;
-            border-radius: 8px;
-            padding: 5px;
-        }
-        .qty-btn {
-            width: 30px; height: 30px; border: none; background: white; border-radius: 5px;
-            font-weight: bold; color: var(--primary-color);
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        /* التبويبات السفلية */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: var(--white);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
-            z-index: 999;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-        }
-        .nav-item {
-            text-align: center;
-            color: #999;
-            font-size: 0.8rem;
-            background: none;
-            border: none;
-        }
-        .nav-item i { display: block; font-size: 1.4rem; margin-bottom: 5px; }
-        .nav-item.active { color: var(--accent-color); }
-
-        /* إشعار عائم */
-        #toast {
-            position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
-            background: rgba(44, 62, 80, 0.9); color: white; padding: 10px 20px;
-            border-radius: 25px; z-index: 1000; opacity: 0; transition: 0.3s; pointer-events: none;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -178,19 +16,19 @@
 
     <div id="toast">تمت الإضافة للسلة</div>
 
+    <div id="scanner-container" style="display:none;">
+        <div id="interactive" class="viewport"><div class="scan-line"></div></div>
+        <button class="btn btn-danger" onclick="stopScanner()">إغلاق الكاميرا</button>
+    </div>
+
     <section id="home-section" class="active">
         <div class="card">
             <h3><i class="fa-solid fa-barcode"></i> مسح المنتجات</h3>
             <p style="color: #777; font-size: 0.9rem;">امسح الباركود لإضافة المنتج مباشرة للفاتورة</p>
             
-            <button class="btn btn-primary" id="start-scan-btn" onclick="toggleScanner()">
+            <button class="btn btn-primary" id="start-scan-btn" onclick="startSellingScan()">
                 <i class="fa-solid fa-camera"></i> فتح الكاميرا
             </button>
-            
-            <div id="scanner-container" style="display:none; margin-top:15px;">
-                <div id="interactive" class="viewport"><div class="scan-line"></div></div>
-                <button class="btn btn-danger" onclick="stopScanner()">إغلاق الكاميرا</button>
-            </div>
         </div>
 
         <div class="card" id="cart-preview">
@@ -209,11 +47,18 @@
 
     <section id="inventory-section">
         <div class="card">
-            <h3><i class="fa-solid fa-plus-circle"></i> إضافة منتج جديد</h3>
+            <h3 id="inv-title"><i class="fa-solid fa-plus-circle"></i> إدارة المنتجات</h3>
+            
             <div class="form-group">
                 <label>باركود المنتج</label>
-                <input type="number" id="inv-barcode" placeholder="امسح او اكتب الباركود">
+                <div class="input-with-btn">
+                    <input type="number" id="inv-barcode" placeholder="اكتب أو امسح الباركود">
+                    <button class="btn-icon" onclick="startInventoryScan()">
+                        <i class="fa-solid fa-barcode"></i>
+                    </button>
+                </div>
             </div>
+
             <div class="form-group">
                 <label>اسم المنتج</label>
                 <input type="text" id="inv-name" placeholder="مثال: مشروب غازي">
@@ -226,7 +71,10 @@
                 <label>الكمية المتوفرة</label>
                 <input type="number" id="inv-qty" placeholder="0">
             </div>
-            <button class="btn btn-accent" onclick="saveProduct()">حفظ المنتج</button>
+            
+            <input type="hidden" id="inv-old-barcode">
+            <button class="btn btn-accent" id="save-product-btn" onclick="saveProduct()">حفظ المنتج</button>
+            <button class="btn btn-danger" id="cancel-edit-btn" onclick="cancelEdit()" style="display:none; margin-top:10px;">إلغاء التعديل</button>
         </div>
 
         <div class="card">
@@ -235,17 +83,81 @@
         </div>
     </section>
 
-    <section id="checkout-section">
+    <section id="customers-section">
         <div class="card">
-            <h3>ملخص الفاتورة</h3>
-            <div id="final-cart-list"></div>
-            <hr>
-            <div style="display:flex; justify-content:space-between; font-size:1.3rem; font-weight:bold;">
-                <span>الإجمالي:</span>
-                <span id="final-total">0.00</span>
+            <h3><i class="fa-solid fa-user-plus"></i> إضافة زبون جديد</h3>
+            <div class="form-group">
+                <label>اسم الزبون</label>
+                <input type="text" id="cust-name" placeholder="الاسم الثلاثي">
+            </div>
+            <div class="form-group">
+                <label>رقم الهاتف (بدون صفر، يبدأ بـ 7)</label>
+                <div style="display: flex; align-items: center; gap: 5px; direction: ltr;">
+                    <span style="font-weight:bold;">+964</span>
+                    <input type="number" id="cust-phone" placeholder="7xxxxxxxxx" style="direction: ltr;">
+                </div>
+            </div>
+            <button class="btn btn-accent" onclick="addCustomer()">إضافة الزبون</button>
+        </div>
+
+        <div class="card">
+            <h3>قائمة الزبائن</h3>
+            <div class="form-group">
+                <input type="text" id="cust-search" placeholder="بحث عن زبون..." oninput="renderCustomerList()">
+            </div>
+            <div id="customer-list"></div>
+        </div>
+
+        <div id="customer-details-modal" class="modal" style="display:none;">
+            <div class="modal-content card">
+                <span class="close-modal" onclick="closeCustomerModal()">&times;</span>
+                <h3 id="modal-cust-name">تفاصيل الزبون</h3>
+                <p id="modal-cust-phone"></p>
+                <hr>
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                    <strong>إجمالي الديون:</strong>
+                    <span id="modal-cust-debt" style="color:red;">0</span>
+                </div>
+                <h4>سجل المعاملات:</h4>
+                <div id="modal-cust-history" style="max-height: 200px; overflow-y: auto;"></div>
             </div>
         </div>
-        <button class="btn btn-primary" onclick="confirmSale()">تأكيد البيع وحفظ <i class="fa-solid fa-check"></i></button>
+    </section>
+
+    <section id="checkout-section">
+        <div class="card">
+            <h3>بيانات الفاتورة</h3>
+            
+            <div class="form-group">
+                <label>الزبون (للمراسلة والديون)</label>
+                <select id="checkout-customer-select" style="width:100%; padding:12px; border-radius:10px; border:2px solid #ddd; font-family:'Cairo';">
+                    <option value="">زبون عام (نقدي)</option>
+                    </select>
+            </div>
+
+            <div id="final-cart-list"></div>
+            <hr>
+            
+            <div class="form-group">
+                <label>المبلغ الإجمالي</label>
+                <div style="font-size:1.3rem; font-weight:bold; color:var(--primary-color);" id="final-total">0.00</div>
+            </div>
+
+            <div class="form-group">
+                <label>المبلغ الواصل (المدفوع)</label>
+                <input type="number" id="amount-paid" placeholder="أدخل المبلغ المستلم" oninput="calculateRemaining()">
+            </div>
+
+            <div class="form-group">
+                <label>الباقي / الدين</label>
+                <div style="font-size:1.2rem; font-weight:bold; color:var(--danger);" id="amount-remaining">0.00</div>
+            </div>
+
+        </div>
+        
+        <button class="btn btn-success" onclick="confirmSale()">
+            <i class="fa-brands fa-whatsapp"></i> تأكيد وإرسال واتساب
+        </button>
         <br>
         <button class="btn btn-danger" onclick="clearCart()">إلغاء الفاتورة</button>
     </section>
@@ -257,263 +169,15 @@
         <button class="nav-item" onclick="showSection('inventory-section', this)">
             <i class="fa-solid fa-boxes-stacked"></i> المخزون
         </button>
+        <button class="nav-item" onclick="showSection('customers-section', this)">
+            <i class="fa-solid fa-users"></i> الزبائن
+        </button>
         <button class="nav-item" onclick="showSection('checkout-section', this)">
             <i class="fa-solid fa-receipt"></i> الفاتورة
         </button>
     </nav>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
-
-    <script>
-        // --- 1. إدارة البيانات ---
-        let products = JSON.parse(localStorage.getItem('products')) || [];
-        let cart = [];
-        let isScanning = false;
-
-        // تشغيل صوت "طوط"
-        const beepSound = new Audio("data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU..."); // اختصار للكود، سنستخدم صوت نغمة بسيط مولد
-        
-        function playBeep() {
-            // سننشئ صوت بسيط باستخدام Web Audio API لضمان العمل بدون ملفات خارجية
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.type = "square";
-            osc.frequency.value = 800; // تردد الصوت
-            gain.gain.value = 0.1;
-            osc.start();
-            setTimeout(() => osc.stop(), 100);
-        }
-
-        // --- 2. وظائف المخزون ---
-        function saveProduct() {
-            const barcode = document.getElementById('inv-barcode').value;
-            const name = document.getElementById('inv-name').value;
-            const price = parseFloat(document.getElementById('inv-price').value);
-            const qty = parseInt(document.getElementById('inv-qty').value);
-
-            if(!barcode || !name || !price) {
-                alert("يرجى ملء جميع الحقول");
-                return;
-            }
-
-            // التحقق من وجود المنتج مسبقاً
-            const existingIndex = products.findIndex(p => p.barcode === barcode);
-            if(existingIndex > -1) {
-                products[existingIndex] = { barcode, name, price, qty }; // تحديث
-                alert("تم تحديث بيانات المنتج");
-            } else {
-                products.push({ barcode, name, price, qty }); // إضافة جديد
-                alert("تم إضافة المنتج بنجاح");
-            }
-
-            localStorage.setItem('products', JSON.stringify(products));
-            document.getElementById('inv-barcode').value = '';
-            document.getElementById('inv-name').value = '';
-            document.getElementById('inv-price').value = '';
-            document.getElementById('inv-qty').value = '';
-            renderInventoryList();
-        }
-
-        function renderInventoryList() {
-            const container = document.getElementById('inventory-list');
-            container.innerHTML = products.map(p => `
-                <div class="cart-item">
-                    <div class="item-info">
-                        <h4>${p.name}</h4>
-                        <p>باركود: ${p.barcode} | مخزون: ${p.qty}</p>
-                    </div>
-                    <div>${p.price}</div>
-                </div>
-            `).join('');
-        }
-
-        // --- 3. وظائف المسح والبيع ---
-        function toggleScanner() {
-            const container = document.getElementById('scanner-container');
-            if(container.style.display === 'none') {
-                container.style.display = 'block';
-                startScanner();
-            } else {
-                stopScanner();
-            }
-        }
-
-        function startScanner() {
-            if(isScanning) return;
-            isScanning = true;
-
-            Quagga.init({
-                inputStream: {
-                    name: "Live",
-                    type: "LiveStream",
-                    target: document.querySelector('#interactive'),
-                    constraints: {
-                        facingMode: "environment" // الكاميرا الخلفية
-                    }
-                },
-                decoder: {
-                    readers: ["ean_reader", "code_128_reader"] // أنواع الباركود
-                }
-            }, function(err) {
-                if (err) {
-                    console.log(err);
-                    alert("خطأ في فتح الكاميرا: " + err);
-                    return;
-                }
-                Quagga.start();
-            });
-
-            Quagga.onDetected(function(result) {
-                const code = result.codeResult.code;
-                handleScannedCode(code);
-            });
-        }
-
-        function stopScanner() {
-            Quagga.stop();
-            document.getElementById('scanner-container').style.display = 'none';
-            isScanning = false;
-        }
-
-        let lastScannedCode = null;
-        let lastScanTime = 0;
-
-        function handleScannedCode(code) {
-            const now = new Date().getTime();
-            // منع تكرار المسح لنفس الكود في أقل من 2 ثانية
-            if (code === lastScannedCode && (now - lastScanTime < 2000)) return;
-            
-            lastScannedCode = code;
-            lastScanTime = now;
-
-            const product = products.find(p => p.barcode === code);
-
-            if(product) {
-                playBeep();
-                addToCart(product);
-                showToast(`تم مسح: ${product.name}`);
-            } else {
-                // إذا المنتج غير موجود
-                playBeep(); // صوت تنبيه
-                alert(`المنتج بباركود ${code} غير موجود في المخزون!`);
-            }
-        }
-
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.innerText = msg;
-            toast.style.opacity = 1;
-            setTimeout(() => toast.style.opacity = 0, 2000);
-        }
-
-        function addToCart(product) {
-            const existingItem = cart.find(item => item.barcode === product.barcode);
-            if(existingItem) {
-                existingItem.qty++;
-            } else {
-                cart.push({ ...product, qty: 1 });
-            }
-            renderCart();
-        }
-
-        function renderCart() {
-            const list = document.getElementById('cart-list');
-            const finalList = document.getElementById('final-cart-list');
-            let total = 0;
-
-            const html = cart.map((item, index) => {
-                total += item.price * item.qty;
-                return `
-                <div class="cart-item">
-                    <div class="item-info">
-                        <h4>${item.name}</h4>
-                        <p>${item.price} × ${item.qty}</p>
-                    </div>
-                    <div class="qty-controls">
-                        <button class="qty-btn" onclick="updateQty(${index}, -1)">-</button>
-                        <span>${item.qty}</span>
-                        <button class="qty-btn" onclick="updateQty(${index}, 1)">+</button>
-                    </div>
-                </div>`;
-            }).join('');
-
-            list.innerHTML = html || '<p style="text-align:center;color:#999">السلة فارغة</p>';
-            if(finalList) finalList.innerHTML = html; // تحديث شاشة الفاتورة أيضاً
-            
-            document.getElementById('total-price').innerText = total.toFixed(2);
-            document.getElementById('final-total').innerText = total.toFixed(2);
-        }
-
-        function updateQty(index, change) {
-            cart[index].qty += change;
-            if(cart[index].qty <= 0) {
-                cart.splice(index, 1);
-            }
-            renderCart();
-        }
-
-        function goToCheckout() {
-            if(cart.length === 0) {
-                alert("السلة فارغة!");
-                return;
-            }
-            // تبديل التبويب برمجياً
-            const navButtons = document.querySelectorAll('.nav-item');
-            showSection('checkout-section', navButtons[2]);
-        }
-
-        function confirmSale() {
-            if(cart.length === 0) return;
-
-            // تحديث المخزون
-            cart.forEach(cartItem => {
-                const productIndex = products.findIndex(p => p.barcode === cartItem.barcode);
-                if(productIndex > -1) {
-                    products[productIndex].qty -= cartItem.qty;
-                }
-            });
-
-            localStorage.setItem('products', JSON.stringify(products));
-            
-            // هنا يمكن إضافة كود لإرسال البيانات لفايربيس مستقبلاً
-            
-            alert("تمت عملية البيع بنجاح!");
-            cart = [];
-            renderCart();
-            renderInventoryList();
-            showSection('home-section', document.querySelectorAll('.nav-item')[0]);
-        }
-
-        function clearCart() {
-            if(confirm("هل أنت متأكد من إلغاء الفاتورة؟")) {
-                cart = [];
-                renderCart();
-                showSection('home-section', document.querySelectorAll('.nav-item')[0]);
-            }
-        }
-
-        // --- 4. التنقل ---
-        function showSection(id, btn) {
-            document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            
-            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-            if(btn) btn.classList.add('active');
-
-            if(id === 'inventory-section') renderInventoryList();
-            
-            // إغلاق الكاميرا إذا خرجنا من الصفحة الرئيسية
-            if(id !== 'home-section' && isScanning) {
-                stopScanner();
-                document.getElementById('scanner-container').style.display = 'none';
-            }
-        }
-
-        // تهيئة أولية
-        renderInventoryList();
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
