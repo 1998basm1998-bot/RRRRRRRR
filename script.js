@@ -3,7 +3,7 @@ let customers = JSON.parse(localStorage.getItem('customers')) || [];
 let cart = [];
 let isScanning = false;
 let scanMode = 'sell'; 
-let isEditing = false; // متغير لمعرفة هل نحن في وضع التعديل
+let isEditing = false; 
 
 function playBeep() {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -32,15 +32,13 @@ function saveProduct() {
     }
 
     if (isEditing) {
-        // منطق التحديث
         const index = products.findIndex(p => p.barcode === oldBarcode);
         if (index > -1) {
             products[index] = { barcode, name, price, qty };
             alert("تم تعديل المنتج بنجاح");
-            cancelEdit(); // الخروج من وضع التعديل
+            cancelEdit(); 
         }
     } else {
-        // منطق الإضافة الجديدة
         const existingIndex = products.findIndex(p => p.barcode === barcode);
         if(existingIndex > -1) {
             if(confirm("المنتج موجود بالفعل، هل تريد تحديث بياناته؟")) {
@@ -61,22 +59,18 @@ function editProduct(barcode) {
     const product = products.find(p => p.barcode === barcode);
     if (!product) return;
 
-    // تعبئة الحقول
     document.getElementById('inv-barcode').value = product.barcode;
     document.getElementById('inv-name').value = product.name;
     document.getElementById('inv-price').value = product.price;
     document.getElementById('inv-qty').value = product.qty;
     
-    // إعداد وضع التعديل
     document.getElementById('inv-old-barcode').value = product.barcode;
     document.getElementById('inv-title').innerHTML = '<i class="fa-solid fa-pen"></i> تعديل منتج';
     document.getElementById('save-product-btn').innerText = 'تحديث التعديلات';
-    document.getElementById('save-product-btn').className = 'btn btn-info'; // تغيير لون الزر
+    document.getElementById('save-product-btn').className = 'btn btn-info'; 
     document.getElementById('cancel-edit-btn').style.display = 'block';
     
     isEditing = true;
-    
-    // الصعود للأعلى
     document.querySelector('.card').scrollIntoView({behavior: 'smooth'});
 }
 
@@ -138,14 +132,11 @@ function addCustomer() {
         return;
     }
 
-    // التحقق من أن الرقم يبدأ بـ 7 وطوله صحيح (عادة 10 أرقام في العراق بعد الصفر)
-    // المدخل: 7xxxxxxxxx
     if (!phone.startsWith('7')) {
         alert("يجب أن يبدأ رقم الهاتف بـ 7 (بدون الصفر الأولي)");
         return;
     }
     
-    // إضافة كود الدولة
     const fullPhone = "+964" + phone;
 
     customers.push({
@@ -168,7 +159,6 @@ function renderCustomerList() {
     const container = document.getElementById('customer-list');
     const searchTerm = document.getElementById('cust-search').value.toLowerCase();
     
-    // الفلترة حسب البحث (من أول حرف)
     const filteredCustomers = customers.filter(c => c.name.toLowerCase().startsWith(searchTerm) || c.name.toLowerCase().includes(searchTerm));
 
     container.innerHTML = filteredCustomers.map(c => `
@@ -216,7 +206,7 @@ function updateCheckoutCustomerSelect() {
     select.innerHTML = opts;
 }
 
-// --- تشغيل الكاميرا (للبيع أو المخزون) ---
+// --- تشغيل الكاميرا (الإصدار الشامل لكل الباركودات) ---
 function startSellingScan() {
     scanMode = 'sell';
     toggleScanner();
@@ -255,9 +245,19 @@ function startScanner() {
                 height: { min: 480 }
             }
         },
-        locate: true,
+        locate: true, // مهم جداً للتعرف على مكان الباركود
         decoder: {
-            readers: ["ean_reader", "ean_8_reader"], 
+            // هنا التعديل الجوهري: إضافة كل أنواع القراءات الممكنة
+            readers: [
+                "ean_reader",        // المنتجات الأوروبية والعالمية (الشائع)
+                "ean_8_reader",      // المنتجات الصغيرة
+                "code_128_reader",   // الباركود الكثيف (مثل الصورة الثانية)
+                "code_39_reader",    // باركود صناعي قديم
+                "code_39_vin_reader", 
+                "upc_reader",        // المنتجات الأمريكية
+                "upc_e_reader",      // النسخة المصغرة الأمريكية
+                "codabar_reader"     // يستخدم في المكتبات والشحن
+            ], 
             multiple: false
         },
         locator: {
@@ -276,6 +276,7 @@ function startScanner() {
     Quagga.onDetected(function(result) {
         const code = result.codeResult.code;
 
+        // التحقق من تكرار القراءة لضمان الدقة (3 مرات)
         if (code === lastDetectedCode) {
             detectionCount++;
         } else {
@@ -320,7 +321,7 @@ function handleScannedCode(code) {
         addToCart(product);
         showToast(`تم مسح: ${product.name}`);
     } else {
-        alert(`المنتج ${code} غير موجود!`);
+        alert(`المنتج ${code} غير موجود في المخزون!`);
     }
 }
 
@@ -369,7 +370,7 @@ function renderCart() {
     document.getElementById('total-price').innerText = total.toLocaleString() + ' د.ع';
     document.getElementById('final-total').innerText = total.toLocaleString() + ' د.ع';
     
-    calculateRemaining(); // تحديث الحسابات
+    calculateRemaining(); 
 }
 
 function updateQty(index, change) {
@@ -399,7 +400,7 @@ function goToCheckout() {
     }
     updateCheckoutCustomerSelect();
     const navButtons = document.querySelectorAll('.nav-item');
-    showSection('checkout-section', navButtons[3]); // التبويب الرابع هو الفاتورة الآن
+    showSection('checkout-section', navButtons[3]); 
 }
 
 function confirmSale() {
@@ -408,7 +409,6 @@ function confirmSale() {
     const { total, paid, remaining } = calculateRemaining();
     const custId = document.getElementById('checkout-customer-select').value;
     
-    // تحديث المخزون
     cart.forEach(cartItem => {
         const productIndex = products.findIndex(p => p.barcode === cartItem.barcode);
         if(productIndex > -1) {
@@ -419,11 +419,9 @@ function confirmSale() {
 
     let whatsappLink = "";
 
-    // إذا تم اختيار زبون، حفظ المعاملة وتجهيز الواتساب
     if (custId) {
         const customer = customers.find(c => c.id == custId);
         if (customer) {
-            // تسجيل المعاملة
             customer.transactions.push({
                 date: new Date().toLocaleDateString('ar-IQ'),
                 items: cart,
@@ -431,14 +429,11 @@ function confirmSale() {
                 paid: paid,
                 remaining: remaining
             });
-            // إذا كان remaining موجب يعني عليه دين
             if (remaining > 0) {
                 customer.totalDebt += remaining;
             }
-            // حفظ الزبائن
             localStorage.setItem('customers', JSON.stringify(customers));
 
-            // تجهيز رسالة واتساب
             let msg = `*فاتورة إلكترونية - كاشير برو*%0a`;
             msg += `مرحباً ${customer.name}%0a`;
             msg += `------------------%0a`;
@@ -450,8 +445,6 @@ function confirmSale() {
             msg += `*الواصل:* ${paid.toLocaleString()}%0a`;
             msg += `*الباقي/الدين:* ${remaining.toLocaleString()}%0a`;
             
-            // رابط واتساب مباشر للرقم
-            // الرقم مخزن بصيغة +964... نحتاج إزالة + للرابط
             const phoneClean = customer.phone.replace('+', '');
             whatsappLink = `https://wa.me/${phoneClean}?text=${msg}`;
         }
@@ -459,7 +452,6 @@ function confirmSale() {
 
     alert("تمت عملية البيع وحفظ البيانات!");
     
-    // فتح واتساب إذا وجد الرابط
     if (whatsappLink) {
         window.open(whatsappLink, '_blank');
     }
@@ -468,7 +460,7 @@ function confirmSale() {
     document.getElementById('amount-paid').value = '';
     renderCart();
     renderInventoryList();
-    renderCustomerList(); // لتحديث الديون في القائمة
+    renderCustomerList(); 
     showSection('home-section', document.querySelectorAll('.nav-item')[0]);
 }
 
@@ -496,6 +488,5 @@ function showSection(id, btn) {
     }
 }
 
-// تهيئة أولية
 renderInventoryList();
 renderCustomerList();
