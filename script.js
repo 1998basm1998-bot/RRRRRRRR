@@ -81,11 +81,15 @@ function toggleScanner() {
 }
 
 // ============================================
-// الجزء المعدل لتحسين الدقة وحل مشكلة الأرقام العشوائية
+// الجزء المعدل: إضافة نظام التحقق لمنع الأرقام العشوائية
 // ============================================
 function startScanner() {
     if(isScanning) return;
     isScanning = true;
+
+    // متغيرات للتحقق من ثبات القراءة
+    let lastDetectedCode = null;
+    let detectionCount = 0;
 
     Quagga.init({
         inputStream: {
@@ -93,15 +97,15 @@ function startScanner() {
             type: "LiveStream",
             target: document.querySelector('#interactive'),
             constraints: {
-                facingMode: "environment", // استخدام الكاميرا الخلفية
-                width: { min: 640 },      // زيادة الدقة لتوضيح الباركود
+                facingMode: "environment",
+                width: { min: 640 },
                 height: { min: 480 }
             }
         },
-        locate: true, // تفعيل تحديد مكان الباركود أولاً (يمنع قراءة النصوص كأرقام)
+        locate: true,
         decoder: {
-            // قراءة الباركودات التجارية فقط (EAN, UPC) لمنع الأرقام العشوائية
-            readers: ["ean_reader", "upc_reader", "ean_8_reader"], 
+            // نستخدم EAN فقط لأنه الأكثر دقة ويمنع تداخل الأرقام العشوائية
+            readers: ["ean_reader", "ean_8_reader"], 
             multiple: false
         },
         locator: {
@@ -119,9 +123,22 @@ function startScanner() {
 
     Quagga.onDetected(function(result) {
         const code = result.codeResult.code;
-        // فلتر إضافي: تجاهل الأرقام القصيرة جداً التي غالباً ما تكون خطأ
-        if(code.length >= 8) {
-             handleScannedCode(code);
+
+        // خوارزمية التحقق:
+        // يجب أن يقرأ الماسح *نفس الرقم* 3 مرات متتالية قبل قبوله
+        if (code === lastDetectedCode) {
+            detectionCount++;
+        } else {
+            lastDetectedCode = code;
+            detectionCount = 0;
+        }
+
+        // إذا تكرر الرقم 3 مرات (يعني أنه باركود حقيقي وثابت أمام الكاميرا)
+        if (detectionCount > 3) {
+            handleScannedCode(code);
+            // تصفير العداد لانتظار المنتج التالي
+            detectionCount = 0;
+            lastDetectedCode = null; 
         }
     });
 }
@@ -138,7 +155,8 @@ let lastScanTime = 0;
 
 function handleScannedCode(code) {
     const now = new Date().getTime();
-    if (code === lastScannedCode && (now - lastScanTime < 1500)) return;
+    // منع التكرار السريع لنفس الكود المقبول
+    if (code === lastScannedCode && (now - lastScanTime < 2000)) return;
     
     lastScannedCode = code;
     lastScanTime = now;
