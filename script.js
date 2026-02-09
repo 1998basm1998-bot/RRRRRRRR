@@ -45,6 +45,7 @@ function saveProduct() {
     renderInventoryList();
 }
 
+// التعديل 1: إضافة تنسيق الأرقام والعملة في قائمة المخزون
 function renderInventoryList() {
     const container = document.getElementById('inventory-list');
     container.innerHTML = products.map(p => `
@@ -53,7 +54,9 @@ function renderInventoryList() {
                 <h4>${p.name}</h4>
                 <p>باركود: ${p.barcode} | مخزون: ${p.qty}</p>
             </div>
-            <div>${p.price}</div>
+            <div style="font-weight:bold; color:var(--accent-color);">
+                ${Number(p.price).toLocaleString()} د.ع
+            </div>
         </div>
     `).join('');
 }
@@ -80,9 +83,6 @@ function toggleScanner() {
     }
 }
 
-// ============================================
-// الجزء المعدل: إضافة نظام التحقق لمنع الأرقام العشوائية
-// ============================================
 function startScanner() {
     if(isScanning) return;
     isScanning = true;
@@ -104,7 +104,6 @@ function startScanner() {
         },
         locate: true,
         decoder: {
-            // نستخدم EAN فقط لأنه الأكثر دقة ويمنع تداخل الأرقام العشوائية
             readers: ["ean_reader", "ean_8_reader"], 
             multiple: false
         },
@@ -124,8 +123,6 @@ function startScanner() {
     Quagga.onDetected(function(result) {
         const code = result.codeResult.code;
 
-        // خوارزمية التحقق:
-        // يجب أن يقرأ الماسح *نفس الرقم* 3 مرات متتالية قبل قبوله
         if (code === lastDetectedCode) {
             detectionCount++;
         } else {
@@ -133,16 +130,13 @@ function startScanner() {
             detectionCount = 0;
         }
 
-        // إذا تكرر الرقم 3 مرات (يعني أنه باركود حقيقي وثابت أمام الكاميرا)
         if (detectionCount > 3) {
             handleScannedCode(code);
-            // تصفير العداد لانتظار المنتج التالي
             detectionCount = 0;
             lastDetectedCode = null; 
         }
     });
 }
-// ============================================
 
 function stopScanner() {
     Quagga.stop();
@@ -155,7 +149,6 @@ let lastScanTime = 0;
 
 function handleScannedCode(code) {
     const now = new Date().getTime();
-    // منع التكرار السريع لنفس الكود المقبول
     if (code === lastScannedCode && (now - lastScanTime < 2000)) return;
     
     lastScannedCode = code;
@@ -196,6 +189,7 @@ function addToCart(product) {
     renderCart();
 }
 
+// التعديل 2: إضافة تنسيق الأرقام والعملة في السلة والإجمالي
 function renderCart() {
     const list = document.getElementById('cart-list');
     const finalList = document.getElementById('final-cart-list');
@@ -207,7 +201,7 @@ function renderCart() {
         <div class="cart-item">
             <div class="item-info">
                 <h4>${item.name}</h4>
-                <p>${item.price} × ${item.qty}</p>
+                <p>${Number(item.price).toLocaleString()} د.ع × ${item.qty}</p>
             </div>
             <div class="qty-controls">
                 <button class="qty-btn" onclick="updateQty(${index}, -1)">-</button>
@@ -220,8 +214,9 @@ function renderCart() {
     list.innerHTML = html || '<p style="text-align:center;color:#999">السلة فارغة</p>';
     if(finalList) finalList.innerHTML = html;
     
-    document.getElementById('total-price').innerText = total.toFixed(2);
-    document.getElementById('final-total').innerText = total.toFixed(2);
+    // تعديل عرض الإجمالي
+    document.getElementById('total-price').innerText = total.toLocaleString() + ' د.ع';
+    document.getElementById('final-total').innerText = total.toLocaleString() + ' د.ع';
 }
 
 function updateQty(index, change) {
