@@ -1,9 +1,8 @@
 let products = JSON.parse(localStorage.getItem('products')) || [];
 let cart = [];
 let isScanning = false;
-let scanMode = 'sell'; // 'sell' للبيع أو 'inventory' للمخزون
+let scanMode = 'sell'; 
 
-// دالة الصوت
 function playBeep() {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const osc = ctx.createOscillator();
@@ -19,7 +18,7 @@ function playBeep() {
 
 // --- وظائف المخزون ---
 function saveProduct() {
-    const barcode = document.getElementById('inv-barcode').value.trim(); // Trim لإزالة المسافات
+    const barcode = document.getElementById('inv-barcode').value.trim();
     const name = document.getElementById('inv-name').value;
     const price = parseFloat(document.getElementById('inv-price').value);
     const qty = parseInt(document.getElementById('inv-qty').value);
@@ -39,7 +38,6 @@ function saveProduct() {
     }
 
     localStorage.setItem('products', JSON.stringify(products));
-    // تفريغ الحقول
     document.getElementById('inv-barcode').value = '';
     document.getElementById('inv-name').value = '';
     document.getElementById('inv-price').value = '';
@@ -62,13 +60,11 @@ function renderInventoryList() {
 
 // --- تشغيل الكاميرا (للبيع أو المخزون) ---
 
-// زر الكاميرا في صفحة البيع
 function startSellingScan() {
     scanMode = 'sell';
     toggleScanner();
 }
 
-// زر الكاميرا الجديد في صفحة المخزون
 function startInventoryScan() {
     scanMode = 'inventory';
     toggleScanner();
@@ -84,6 +80,9 @@ function toggleScanner() {
     }
 }
 
+// ============================================
+// الجزء المعدل لتحسين الدقة وحل مشكلة الأرقام العشوائية
+// ============================================
 function startScanner() {
     if(isScanning) return;
     isScanning = true;
@@ -94,12 +93,20 @@ function startScanner() {
             type: "LiveStream",
             target: document.querySelector('#interactive'),
             constraints: {
-                facingMode: "environment"
+                facingMode: "environment", // استخدام الكاميرا الخلفية
+                width: { min: 640 },      // زيادة الدقة لتوضيح الباركود
+                height: { min: 480 }
             }
         },
+        locate: true, // تفعيل تحديد مكان الباركود أولاً (يمنع قراءة النصوص كأرقام)
         decoder: {
-            // التعديل الهام: استخدام ean_reader فقط لضمان ثبات الرقم للمنتجات التجارية
-            readers: ["ean_reader"] 
+            // قراءة الباركودات التجارية فقط (EAN, UPC) لمنع الأرقام العشوائية
+            readers: ["ean_reader", "upc_reader", "ean_8_reader"], 
+            multiple: false
+        },
+        locator: {
+            patchSize: "medium",
+            halfSample: true
         }
     }, function(err) {
         if (err) {
@@ -112,9 +119,13 @@ function startScanner() {
 
     Quagga.onDetected(function(result) {
         const code = result.codeResult.code;
-        handleScannedCode(code);
+        // فلتر إضافي: تجاهل الأرقام القصيرة جداً التي غالباً ما تكون خطأ
+        if(code.length >= 8) {
+             handleScannedCode(code);
+        }
     });
 }
+// ============================================
 
 function stopScanner() {
     Quagga.stop();
@@ -133,16 +144,13 @@ function handleScannedCode(code) {
     lastScanTime = now;
     playBeep();
 
-    // التحقق من الوضع (مخزون أم بيع)
     if (scanMode === 'inventory') {
-        // إذا كنا في المخزون، نضع الكود في الحقل ونغلق الكاميرا
         document.getElementById('inv-barcode').value = code;
         stopScanner();
         showToast("تم التقاط الباركود");
         return; 
     }
 
-    // إذا كنا في وضع البيع (الكود القديم)
     const product = products.find(p => p.barcode === code);
     if(product) {
         addToCart(product);
